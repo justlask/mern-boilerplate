@@ -8,16 +8,7 @@ const cors        = require('cors');
 const session     = require('express-session');
 const passport    = require('passport');
 require('./configs/passport');
-
-mongoose
-.connect(process.env.MONGO_URI, {useNewUrlParser: true})
-.then(x => {
-  console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
-})
-.catch(err => {
-  console.error('Error connecting to mongo', err)
-});
-
+require('./configs/mongoose');
 
 const app_name = require('./package.json').name;
 
@@ -50,6 +41,8 @@ app.listen(process.env.PORT);
 
 
 app.use('/', require('./routes/index'));
+app.use('/auth', require('./routes/auth-routes'));
+app.use('/user', require('./routes/user-routes'));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build/index.html'))
