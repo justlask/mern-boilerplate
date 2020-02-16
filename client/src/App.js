@@ -1,24 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import { Switch, Route } from 'react-router-dom';
 import './App.css';
 
+import AuthService from './util/AuthService';
+import Navbar from './Components/Navbar';
+import Home from './Components/Home';
+import Signup from './Components/Auth/Signup';
+import Login from './Components/Auth/Login';
+
 function App() {
+  const service = new AuthService();
+  const [ user, updateUser ] = useState(null);
+
+  const fetchUser = () => {
+    if( user === null ){
+      service.loggedin()
+      .then(response =>{
+        updateUser(response);
+      })
+      .catch( err =>{
+        updateUser(false)
+      })
+    }
+  }
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+
+  const logoutUser = () => {
+    service.logout()
+    .then(data => {
+      updateUser(null);
+    })
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Navbar user={user} logoutUser={logoutUser}/>
+      <Switch>
+        <Route exact path='/' render={(props) => <Home user={user} {...props} updateUser={updateUser}/>}></Route>
+        <Route exact path="/signup" render={(props) => <Signup user={user} {...props} updateUser={updateUser} />}></Route>
+        <Route exact path="/login" render={(props) => <Login user={user} {...props} updateUser={updateUser} />}></Route>
+      </Switch>
     </div>
   );
 }
