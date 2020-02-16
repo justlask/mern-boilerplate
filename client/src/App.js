@@ -3,10 +3,12 @@ import { Switch, Route } from 'react-router-dom';
 import './App.css';
 
 import AuthService from './util/AuthService';
+import ProtectedRoute from './util/ProtectedRoute';
 import Navbar from './Components/Navbar';
 import Home from './Components/Home';
 import Signup from './Components/Auth/Signup';
 import Login from './Components/Auth/Login';
+import Dashboard from './Components/Dashboard';
 
 function App() {
   const service = new AuthService();
@@ -43,6 +45,7 @@ function App() {
         <Route exact path='/' render={(props) => <Home user={user} {...props} updateUser={updateUser}/>}></Route>
         <Route exact path="/signup" render={(props) => <Signup user={user} {...props} updateUser={updateUser} />}></Route>
         <Route exact path="/login" render={(props) => <Login user={user} {...props} updateUser={updateUser} />}></Route>
+        <ProtectedRoute user={user} updateUser={updateUser} exact path="/dashboard" component={Dashboard}/>
       </Switch>
     </div>
   );

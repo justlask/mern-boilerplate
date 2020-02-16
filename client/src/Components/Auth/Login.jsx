@@ -1,19 +1,37 @@
-import React from 'react'
-import AuthService from '../../util/AuthService'
+import React, { useState } from 'react';
+import AuthService from '../../util/AuthService';
+import FlashMessage from '../FlashMessage';
 
 const Login = (props) => {
   const service = new AuthService();
+  const [ user, updateUser ] = useState(null);
+  const [ isVisable, setVisable ] = useState(false);
+  const [ message, setMessage ] = useState(null);
+
+  const handleError = (error) => {
+    setMessage(error.response.data.message)
+    setVisable(true)
+
+    setTimeout(() => setVisable(false), 4000)
+  }
 
   const handleChange = (e) => {  
-    setUser({
+    updateUser({
       ...user,
       [e.target.name]: e.target.value
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    console.log('login')
+    service.login(user.username, user.password)
+    .then(response => {
+      props.updateUser(response)
+      props.history.push('/dashboard')
+    })
+    .catch(err => {
+      handleError(err)
+    })
   }
 
   return (
@@ -25,7 +43,8 @@ const Login = (props) => {
         <input type="text" name="username" placeholder="username" onChange={e => handleChange(e)}/><br></br>
         <label htmlFor="password">password</label>
         <input type="password" name="password" onChange={e => handleChange(e)}/><br></br>
-        <input type="submit" value="log in" onClick={e => handleSubmit(e) }/>
+        <FlashMessage isVisable={isVisable} setVisable={setVisable} message={message}/>
+        <input type="submit" value="log in" onClick={e => handleLogin(e) }/>
       </form>
     </div>
   )

@@ -41,8 +41,8 @@ app.listen(process.env.PORT);
 
 
 app.use('/', require('./routes/index'));
-app.use('/auth', require('./routes/auth-routes'));
-app.use('/user', require('./routes/user-routes'));
+app.use('/api/auth', require('./routes/auth-routes'));
+app.use('/api/user', require('./routes/user-routes'));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build/index.html'))
