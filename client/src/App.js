@@ -39,7 +39,7 @@ function App() {
   }
 
   return (
-    <div className="app">
+    <div className="App">
       <Navbar user={user} logoutUser={logoutUser}/>
       <Switch>
         <Route exact path='/' render={(props) => <Home user={user} {...props} updateUser={updateUser}/>}></Route>
